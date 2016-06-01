@@ -1,0 +1,2 @@
+{:require  [auto-mention.core]
+ :init-fns [auto-mention.core/mount-root]}
