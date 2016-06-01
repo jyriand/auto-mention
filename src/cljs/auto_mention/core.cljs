@@ -31,10 +31,16 @@
                  :border "1px solid black"}
          :on-input #(dispatch [:text-change %])}])
 
+(defn test-part []
+  (let [text (subscribe [:text-query])]
+    (fn text-bla []
+      [:div @text])))
+
 (defn container []
   [:div
    [text-area]
-   [autocomplete]])
+   [autocomplete]
+   [test-part]])
 
 (defn mount-root []
   (dispatch-sync [:initialize completions])

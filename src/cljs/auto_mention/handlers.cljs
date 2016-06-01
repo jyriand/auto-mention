@@ -2,7 +2,8 @@
   (:require-macros [reagent.ratom :refer [reaction]])
   (:require [re-frame.core :refer [register-handler
                                    register-sub
-                                   dispatch]]))
+                                   dispatch]]
+            [clojure.string :as s]))
 
 (defn get-inner-text [e]
   (-> e .-target .-textContent))
@@ -13,10 +14,14 @@
    (reaction (:completions @db))))
 
 (register-sub
+ :text-query
+ (fn [db _]
+   (reaction (:text @db))))
+
+(register-sub
  :board-query
  (fn [db _]
    (reaction (:board @db))))
-
 
 (register-handler
  :initialize
@@ -26,5 +31,14 @@
 (register-handler
  :text-change
  (fn [db [_ value]]
-   (js/console.log (get-inner-text value))
+   (assoc db :text (get-inner-text value))
+   (dispatch [:parse-text (get-inner-text value)])
+   db))
+
+(register-handler
+ :parse-text
+ (fn [db [_ value]]
+   (if (s/includes? value "@")
+     (js/console.log "Match")
+     (js/console.log "No match"))
    db))
