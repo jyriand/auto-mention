@@ -7,6 +7,17 @@
 (defn get-inner-text [e]
   (-> e .-target .-textContent))
 
+(register-sub
+ :results-query
+ (fn [db _]
+   (reaction (:completions @db))))
+
+(register-sub
+ :board-query
+ (fn [db _]
+   (reaction (:board @db))))
+
+
 (register-handler
  :initialize
  (fn [db [_ value]]
