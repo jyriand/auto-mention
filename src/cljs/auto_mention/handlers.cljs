@@ -1,5 +1,6 @@
 (ns auto-mention.handlers
   (:require [auto-mention.helpers :as h]
+            [auto-mention.parser :as parser]
             [re-frame.core :refer [register-handler dispatch]]
             [clojure.string :as s]))
 
@@ -19,7 +20,7 @@
 (register-handler
  :parse-text
  (fn [db [_ value]]
-   (if (s/includes? value "@")
-     (js/console.log "Match")
-     (js/console.log "No match"))
-   db))
+   (let [trigger-words (parser/trigger-words \@ value)]
+     (if (seq trigger-words)
+       (assoc db :completions {:people ["Rich Hickey" "Alan Turing"]})
+       (assoc db :completions nil)))))
