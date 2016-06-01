@@ -1,4 +1,11 @@
-(ns auto-mention.core)
+(ns auto-mention.core
+  (:require [reagent.core :as r]))
+
+(defn text-area []
+  [:div {:contentEditable true
+         :style {:width 100
+                 :height 100
+                 :border "1px solid black"}}])
 
 (defn mount-root []
-  (js/console.log "Hello world"))
+  (r/render [text-area] (.getElementById js/document "app")))
