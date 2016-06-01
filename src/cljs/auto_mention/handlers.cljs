@@ -1,27 +1,7 @@
 (ns auto-mention.handlers
-  (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [re-frame.core :refer [register-handler
-                                   register-sub
-                                   dispatch]]
+  (:require [auto-mention.helpers :as h]
+            [re-frame.core :refer [register-handler dispatch]]
             [clojure.string :as s]))
-
-(defn get-inner-text [e]
-  (-> e .-target .-textContent))
-
-(register-sub
- :results-query
- (fn [db _]
-   (reaction (:completions @db))))
-
-(register-sub
- :text-query
- (fn [db _]
-   (reaction (:text @db))))
-
-(register-sub
- :board-query
- (fn [db _]
-   (reaction (:board @db))))
 
 (register-handler
  :initialize
@@ -31,9 +11,10 @@
 (register-handler
  :text-change
  (fn [db [_ value]]
-   (assoc db :text (get-inner-text value))
-   (dispatch [:parse-text (get-inner-text value)])
-   db))
+   (let [text (h/inner-text value)]
+     (assoc db :text text)
+     (dispatch [:parse-text text])
+     db)))
 
 (register-handler
  :parse-text
