@@ -11,13 +11,18 @@
 (def completions {:completions
                   {:people ["Rich Hickey" "Alan Turing"]}})
 
-(defn autocomplete-results []
+(defn autocomplete-results [results]
+  [:ul {:class "completions"} "Autocomplete Results:"
+   (for [completion (:people results)]
+     ^{:key completion}
+     [:li completion])])
+
+(defn autocomplete []
   (let [results (subscribe [:results-query])]
     (fn show-results []
-      [:ul {:class "completions"} "Autocomplete Results:"
-       (for [completion (:people @results)]
-         ^{:key completion}
-         [:li completion])])))
+      (if (nil? @results)
+        [:div "No results"]
+        [autocomplete-results @results]))))
 
 (defn text-area []
   [:div {:contentEditable true
@@ -29,7 +34,7 @@
 (defn container []
   [:div
    [text-area]
-   [autocomplete-results]])
+   [autocomplete]])
 
 (defn mount-root []
   (dispatch-sync [:initialize completions])
