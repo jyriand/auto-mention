@@ -22,7 +22,12 @@
                  :border "1px solid black"}
          :on-input #(dispatch [:text-change %])}])
 
+(defn completed-btn []
+  [:button {:on-click #(dispatch [:mark-completed])}
+   "Mark Completed"])
+
 (defn container []
   [:div
    [text-area]
+   [completed-btn]
    [autocomplete]])

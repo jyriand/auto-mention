@@ -12,15 +12,24 @@
 (register-handler
  :text-change
  (fn [db [_ value]]
-   (let [text (h/inner-text value)]
-     (assoc db :text text)
+   (let [text (h/inner-text value)
+         new-db (assoc-in db [:text-area :content] text)]
      (dispatch [:parse-text text])
-     db)))
+     new-db)))
+
+(register-handler
+ :mark-completed
+ (fn [db _]
+   (let [mentions (get-in db [:completions :mentions])]
+     (if (not (empty? mentions))
+       (assoc-in db [:text-area :completed] (vec mentions))
+       db))))
 
 (register-handler
  :parse-text
  (fn [db [_ value]]
    (let [trigger-words (parser/trigger-words \@ value)]
      (if (seq trigger-words)
-       (assoc db :completions {:people ["Rich Hickey" "Alan Turing"]})
+       (assoc db :completions {:people ["Rich Hickey" "Alan Turing"]
+                               :mentions trigger-words})
        (assoc db :completions nil)))))

@@ -6,13 +6,3 @@
  :results-query
  (fn [db _]
    (reaction (:completions @db))))
-
-(register-sub
- :text-query
- (fn [db _]
-   (reaction (:text @db))))
-
-(register-sub
- :board-query
- (fn [db _]
-   (reaction (:board @db))))
